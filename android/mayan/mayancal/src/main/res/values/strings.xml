@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MayanCal</string>
+    <string name="title">title</string>
+    <string name="mayan_text">Mayan text</string>
+    <string name="latin_text">Latin text</string>
+    <string name="mayan_glyph_image">Mayan glyph image"</string>
+
+</resources>

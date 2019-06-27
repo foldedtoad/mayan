@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/mayan.iml" filepath="$PROJECT_DIR$/mayan.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mayancal/mayancal.iml" filepath="$PROJECT_DIR$/mayancal/mayancal.iml" />
+    </modules>
+  </component>
+</project>
