@@ -49,8 +49,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void insetImage(String imageId, byte[] image) {
-        //Log.d(TAG, "** insetImage");
-
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(IMAGE_ID, imageId);

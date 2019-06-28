@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,8 +32,13 @@ public class MainActivity extends Activity {
     private TextView textViewLatin;
     private TextView textViewMayan;
 
-
     JSONArray jsonGlyphsArray;
+
+    float  swipe_x1,swipe_x2;
+    static final int MIN_DISTANCE = 150;
+
+    int index = 0;
+    String IMAGE_ID;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +52,7 @@ public class MainActivity extends Activity {
         textViewLatin = findViewById(R.id.textView_latin);
         textViewMayan = findViewById(R.id.textView_mayan);
 
-        new LoadImageFromDatabaseTask().execute(0);
+        new LoadDatabaseTask().execute(0);
     }
 
     public String loadJSONFromAsset() {
@@ -108,40 +114,100 @@ public class MainActivity extends Activity {
         Log.d(TAG, "** loadGlyphsJSON OK");
     }
 
-    private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
 
-        private final ProgressDialog LoadImageProgressDialog = new ProgressDialog(MainActivity.this);
+        switch(event.getAction()) {
+
+            // Finger down (start of gesture)
+            case MotionEvent.ACTION_DOWN:
+                swipe_x1 = event.getX();
+                break;
+
+            // Finger up (end of gesture)
+            case MotionEvent.ACTION_UP:
+                swipe_x2 = event.getX();
+                float deltaX = swipe_x2 - swipe_x1;
+
+                if (Math.abs(deltaX) > MIN_DISTANCE) {
+                    if (index < 0)  index = 0;
+                    if (index > 19) index = 19;
+                    Log.d(TAG, "index:" + index);
+                    IMAGE_ID = String.format("mayan_%02d", index);
+
+                    // Left-to-Right swipe direction
+                    if (swipe_x2 > swipe_x1) {
+                        Log.d(TAG, "Swipe [Previous]");
+                        index--;
+                        new LoadImageFromDatabaseTask().execute(0);
+                    }
+                    // Right-to-left swipe direction
+                    else {
+                        Log.d(TAG, "Swipe [Next]");
+                        index++;
+                        new LoadImageFromDatabaseTask().execute(0);
+                    }
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private class LoadDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
+
+        private final ProgressDialog LoadProgressDialog = new ProgressDialog(MainActivity.this);
 
         protected void onPreExecute() {
             Log.d(TAG, "** onPreExecute");
-            this.LoadImageProgressDialog.setMessage("Loading Image Database...");
-            this.LoadImageProgressDialog.show();
+            this.LoadProgressDialog.setMessage("Loading Image Database...");
+            this.LoadProgressDialog.show();
         }
 
         @Override
         protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
             Log.d(TAG, "** doInBackground");
             String IMAGE_ID = "mayan_creation";
-
             loadGlyphsJSON();
-
             return databaseHelper.getImage(IMAGE_ID);
         }
 
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
             Log.d(TAG, "** onPostExecute: ImageID " + imageHelper.getImageId());
-            if (this.LoadImageProgressDialog.isShowing()) {
-                this.LoadImageProgressDialog.dismiss();
+            if (this.LoadProgressDialog.isShowing()) {
+                this.LoadProgressDialog.dismiss();
             }
             setUpImage(imageHelper.getImageByteArray());
+        }
+    }
+
+
+    private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
+
+        protected void onPreExecute() {
+            Log.d(TAG, "** onPreExecute");
+        }
+
+        @Override
+        protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
+            Log.d(TAG, "** doInBackground");
+            return databaseHelper.getImage(IMAGE_ID);
+        }
+
+        protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
+            if (imageHelper.getImageId() != null) {
+                Log.d(TAG, "** onPostExecute: ImageID: " + imageHelper.getImageId());
+                setUpImage(imageHelper.getImageByteArray());
+            }
+            else {
+                Log.d(TAG, "** onPostExecute: ImageID: null");
+            }
         }
     }
 
     private void setUpImage(byte[] bytes) {
         Log.d(TAG, "** setUpImage");
 
-        String desc = "Mayan Creation";
-        textViewTitle.setText(desc);
+        textViewTitle.setText(IMAGE_ID);
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
