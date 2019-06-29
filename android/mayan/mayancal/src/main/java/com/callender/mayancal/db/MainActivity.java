@@ -130,21 +130,23 @@ public class MainActivity extends Activity {
                 float deltaX = swipe_x2 - swipe_x1;
 
                 if (Math.abs(deltaX) > MIN_DISTANCE) {
-                    if (index < 0)  index = 0;
-                    if (index > 19) index = 19;
-                    Log.d(TAG, "index:" + index);
-                    IMAGE_ID = String.format("mayan_%02d", index);
-
+ 
                     // Left-to-Right swipe direction
                     if (swipe_x2 > swipe_x1) {
                         Log.d(TAG, "Swipe [Previous]");
-                        index--;
+                        if (index > 0)
+                            index--;
+                        IMAGE_ID = String.format("mayan_%02d", index);
+                        Log.d(TAG, "IMAGE_ID:" + IMAGE_ID);
                         new LoadImageFromDatabaseTask().execute(0);
                     }
                     // Right-to-left swipe direction
                     else {
                         Log.d(TAG, "Swipe [Next]");
-                        index++;
+                        if (index < 19)
+                            index++;
+                        IMAGE_ID = String.format("mayan_%02d", index);
+                        Log.d(TAG, "IMAGE_ID:" + IMAGE_ID);
                         new LoadImageFromDatabaseTask().execute(0);
                     }
                 }
