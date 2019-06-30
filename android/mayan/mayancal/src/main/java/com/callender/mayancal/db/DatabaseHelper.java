@@ -11,9 +11,9 @@ import android.util.Log;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    //private Context context;
     private final String TAG = "DatabaseHelper";
-    private static final int databaseVersion = 1;
+
+    private static final int    databaseVersion = 1;
     private static final String databaseName = "dbTest";
     private static final String TABLE_IMAGE = "ImageTable";
 
@@ -46,6 +46,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_IMAGE);
         onCreate(sqLiteDatabase);
+    }
+
+    public boolean doesImageTableExist() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "select DISTINCT table_name from sqlite_master where table_name = '"
+                + TABLE_IMAGE + "'", null);
+
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                cursor.close();
+                return true;
+            }
+            cursor.close();
+        }
+        return false;
     }
 
     public void insetImage(String imageId, byte[] image) {

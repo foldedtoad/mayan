@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -28,6 +30,7 @@ public class MainActivity extends Activity {
 
     private com.callender.mayancal.db.DatabaseHelper databaseHelper;
     private ImageView imageView;
+    private LinearLayout linearLayout;
     private TextView textViewTitle;
     private TextView textViewLatin;
     private TextView textViewMayan;
@@ -35,22 +38,28 @@ public class MainActivity extends Activity {
     JSONArray jsonGlyphsArray;
 
     float  swipe_x1,swipe_x2;
-    static final int MIN_DISTANCE = 150;
+    static final int MIN_DISTANCE = 150; // x-coordinate must travel to indicate a swipe
 
     int index = 0;
-    String IMAGE_ID;
+    String image_id;
+    String image_name_format;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        databaseHelper = new DatabaseHelper(this);
+        linearLayout = findViewById(R.id.main_layout);
+        linearLayout.setVisibility(View.INVISIBLE);
+
+        image_name_format = getString(R.string.image_name_format);
 
         textViewTitle = findViewById(R.id.textView_title);
         imageView     = findViewById(R.id.imageView);
         textViewLatin = findViewById(R.id.textView_latin);
         textViewMayan = findViewById(R.id.textView_mayan);
+
+        databaseHelper = new DatabaseHelper(this);
 
         new LoadDatabaseTask().execute(0);
     }
@@ -134,19 +143,19 @@ public class MainActivity extends Activity {
                     // Left-to-Right swipe direction
                     if (swipe_x2 > swipe_x1) {
                         Log.d(TAG, "Swipe [Previous]");
-                        if (index > 0)
+                        if (index > 0)  // smallest Mayan digit: 0
                             index--;
-                        IMAGE_ID = String.format("mayan_%02d", index);
-                        Log.d(TAG, "IMAGE_ID:" + IMAGE_ID);
+                        image_id = String.format(image_name_format, index);
+                        Log.d(TAG, "image_id:" + image_id);
                         new LoadImageFromDatabaseTask().execute(0);
                     }
                     // Right-to-left swipe direction
                     else {
                         Log.d(TAG, "Swipe [Next]");
-                        if (index < 19)
+                        if (index < 19)  // largest Mayan digit: 19
                             index++;
-                        IMAGE_ID = String.format("mayan_%02d", index);
-                        Log.d(TAG, "IMAGE_ID:" + IMAGE_ID);
+                        image_id = String.format(image_name_format, index);
+                        Log.d(TAG, "image_id:" + image_id);
                         new LoadImageFromDatabaseTask().execute(0);
                     }
                 }
@@ -178,6 +187,7 @@ public class MainActivity extends Activity {
             if (this.LoadProgressDialog.isShowing()) {
                 this.LoadProgressDialog.dismiss();
             }
+            linearLayout.setVisibility(View.VISIBLE);
             setUpImage(imageHelper.getImageByteArray());
         }
     }
@@ -192,7 +202,7 @@ public class MainActivity extends Activity {
         @Override
         protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
             Log.d(TAG, "** doInBackground");
-            return databaseHelper.getImage(IMAGE_ID);
+            return databaseHelper.getImage(image_id);
         }
 
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
@@ -209,7 +219,7 @@ public class MainActivity extends Activity {
     private void setUpImage(byte[] bytes) {
         Log.d(TAG, "** setUpImage");
 
-        textViewTitle.setText(IMAGE_ID);
+        textViewTitle.setText(image_id);
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
