@@ -142,21 +142,21 @@ public class MainActivity extends Activity {
  
                     // Left-to-Right swipe direction
                     if (swipe_x2 > swipe_x1) {
-                        Log.d(TAG, "Swipe [Previous]");
-                        if (index > 0)  // smallest Mayan digit: 0
-                            index--;
+                        Log.d(TAG, "Swipe Direction [Previous]");
                         image_id = String.format(image_name_format, index);
                         Log.d(TAG, "image_id:" + image_id);
                         new LoadImageFromDatabaseTask().execute(0);
+                        if (index > 0)  // smallest Mayan digit: 0
+                            index--;
                     }
                     // Right-to-left swipe direction
                     else {
-                        Log.d(TAG, "Swipe [Next]");
-                        if (index < 19)  // largest Mayan digit: 19
-                            index++;
+                        Log.d(TAG, "Swipe Direction [Next]");
                         image_id = String.format(image_name_format, index);
                         Log.d(TAG, "image_id:" + image_id);
                         new LoadImageFromDatabaseTask().execute(0);
+                        if (index < 19)  // largest Mayan digit: 19
+                            index++;
                     }
                 }
                 break;
