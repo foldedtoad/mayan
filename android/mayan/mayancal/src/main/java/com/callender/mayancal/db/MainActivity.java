@@ -179,9 +179,9 @@ public class MainActivity extends Activity {
         @Override
         protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
             Log.d(TAG, "** doInBackground");
-            String IMAGE_ID = "mayan_creation";
+            image_id = "mayan_creation";
             loadGlyphsJSON();
-            return databaseHelper.getImage(IMAGE_ID);
+            return databaseHelper.getImage(image_id);
         }
 
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
