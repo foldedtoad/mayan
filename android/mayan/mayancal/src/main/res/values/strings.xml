@@ -4,6 +4,7 @@
     <string name="title">title</string>
     <string name="mayan_text">Mayan text</string>
     <string name="latin_text">Latin text</string>
+    <string name="glyphs_filename">glyphs.json"</string>
     <string name="mayan_glyph_image">Mayan glyph image"</string>
     <string name="image_name_format">mayan_%02d"</string>
 

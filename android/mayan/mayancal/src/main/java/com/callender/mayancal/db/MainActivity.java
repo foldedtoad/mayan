@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
 
         String json;
         try {
-            InputStream inStream = MainActivity.this.getAssets().open("glyphs.json");
+            InputStream inStream = this.getAssets().open(getString(R.string.glyphs_filename));
 
             int size = inStream.available();
 
