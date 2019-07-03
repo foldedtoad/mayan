@@ -11,8 +11,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,9 +29,10 @@ public class MainActivity extends Activity {
 
     final String TAG = "MainActivity";
 
+    private ConstraintLayout mainLayout;
     private com.callender.mayancal.db.DatabaseHelper databaseHelper;
     private ImageView imageView;
-    private LinearLayout linearLayout;
+
     private TextView textViewTitle;
     private TextView textViewLatin;
     private TextView textViewMayan;
@@ -49,8 +51,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        linearLayout = findViewById(R.id.main_layout);
-        linearLayout.setVisibility(View.INVISIBLE);
+        mainLayout = findViewById(R.id.main_layout);
+        mainLayout.setVisibility(View.INVISIBLE);
 
         image_name_format = getString(R.string.image_name_format);
 
@@ -187,7 +189,7 @@ public class MainActivity extends Activity {
             if (this.LoadProgressDialog.isShowing()) {
                 this.LoadProgressDialog.dismiss();
             }
-            linearLayout.setVisibility(View.VISIBLE);
+            mainLayout.setVisibility(View.VISIBLE);
             setUpImage(imageHelper.getImageByteArray());
         }
     }

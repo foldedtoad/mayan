@@ -48,19 +48,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean doesImageTableExist() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(
-                "select DISTINCT table_name from sqlite_master where table_name = '"
-                + TABLE_IMAGE + "'", null);
-
-        if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                cursor.close();
-                return true;
-            }
-            cursor.close();
+    public boolean checkForTableExists() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sql = "select DISTINCT tbl_name from sqlite_master where tbl_name='" + TABLE_IMAGE + "'";
+        Log.d(TAG, "sql: \"" + sql + "\"");
+        Cursor mCursor = db.rawQuery(sql, null);
+        if (mCursor.getCount() > 0) {
+            //mCursor.close();
+            return true;
         }
+        mCursor.close();
         return false;
     }
 
