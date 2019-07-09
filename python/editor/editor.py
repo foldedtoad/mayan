@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
 	printGlyphs()
 
-	runEditorUI()
+	runEditorUI(filesList)
 
 	saveGlyphs()
 
