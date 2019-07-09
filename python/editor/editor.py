@@ -2,11 +2,13 @@
 #
 import os
 import sys
+sys.dont_write_bytecode = True
 import argparse
 import json
 import chardet
 from os import listdir
 from os.path import isfile, join
+from editor_ui import runEditorUI
 
 glyphs = {'glyphs': []}
 
@@ -51,23 +53,30 @@ def addGlyph(filename):
 		file.close()
 
 
-if __name__ == '__main__':
-
-	print "editor start"
-
-	loadGlyphs()
-
+def buildFileList():
 	filesList = []
 	for root, dir, files in os.walk(imagesPath):
 		for filename in files:
 			if '.png' in filename.lower():
 				filesList.append(os.path.join('', filename))
 	filesList.sort()
+	return filesList
+
+
+if __name__ == '__main__':
+
+	print "editor start"
+
+	loadGlyphs()
+
+	filesList = buildFileList()
 
 	for filename in filesList:
 		addGlyph(filename)
 
 	printGlyphs()
+
+	runEditorUI()
 
 	saveGlyphs()
 

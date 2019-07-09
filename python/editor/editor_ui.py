@@ -3,8 +3,11 @@
 import time
 import struct
 import sys
+sys.dont_write_bytecode = True
+
 import Tkinter as tk
 from Tkinter import *
+from PIL import ImageTk,Image  
 
 #===========================================
 # Define Editor UI class
@@ -16,8 +19,16 @@ class Editor_UI(tk.Frame):
         tk.Frame.__init__(self, master)
         self.pack()
         self.master = master
-        self.glyphId = tk.StringVar()
-        self.glyphFilename = tk.StringVar()
+
+        scrollbar = Scrollbar(self.master)
+        scrollbar.pack(side=RIGHT, fill=Y)
+
+        self.canvas = Canvas(self.master, width = 200, height = 200)
+        self.canvas.pack()
+        self.img = ImageTk.PhotoImage(Image.open("./images/mayan_00.png"))  
+        self.canvas.create_image(30, 30, anchor=NW, image=self.img) 
+
+        self.glyphFilename  = tk.StringVar()
         self.glyphMayanText = tk.StringVar()
         self.glyphMayanText = tk.StringVar()
         self.glyphLatinText = tk.StringVar()
@@ -30,7 +41,6 @@ class Editor_UI(tk.Frame):
         self.buttonCancel = Button(master, text="Cancel", command=self.buttonCancelCallback)
         self.buttonCancel.pack()
         
-        self.glyphId.set('')
         self.glyphFilename.set('')
         self.glyphMayanText.set('')
         self.glyphLatinText.set('')
@@ -42,18 +52,17 @@ class Editor_UI(tk.Frame):
 
     def buttonOkCallback(self):
         print "Ok clicked!"
-        print "Glyph Id:   " + self.glyphId.get()
         print "Filename:   " + self.glyphFilename.get()
         print "Mayan Text: " + self.glyphMayanText.get()
         print "Latin Text: " + self.glyphLatinText.get()
 
         self.status.set("Process record...")
-        self.after(5000, self.doAfterDelay)
+        self.after(1000, self.doAfterDelay)
 
 
     def buttonCancelCallback(self):
         print "Cancel clicked!"
-        self.after(5000, self.doAfterDelay)
+        self.after(1000, self.doAfterDelay)
 
 
     def doShutdown(self, key):
@@ -63,24 +72,17 @@ class Editor_UI(tk.Frame):
     def createWidgets(self):
         # Create a label for the instructions
         self.labelInst = tk.Label(self, 
-                                  text="Please enter Glyph ID below",
+                                  text="Please enter Glyph filename below",
                                   font=("Helvetica", 16),
                                   pady=10)
         self.labelInst.pack()
-
-        # Create the widgets for entering a glyph-id
-        self.entryGlyphId = tk.Entry(self, 
-                                    width=10, 
-                                    font=("Helvetica", 24),
-                                    textvariable=self.glyphId)
-        self.entryGlyphId.pack()
-        self.entryGlyphId.focus_set()
 
         self.entryGlyphFilename = tk.Entry(self, 
                                     width=30, 
                                     font=("Helvetica", 24),
                                     textvariable=self.glyphFilename)
         self.entryGlyphFilename.pack()
+        self.entryGlyphFilename.focus_set()
 
         self.entryGlyphMayanText = tk.Entry(self, 
                                     width=30, 
@@ -103,9 +105,7 @@ class Editor_UI(tk.Frame):
 
     def doAfterDelay(self):        
         # Clear entry and label
-        self.glyphId = ''
         self.glyphFilename = ''
-        self.entryGlyphId.delete(0,10)
         self.entryGlyphFilename.delete(0,30)
         self.entryGlyphMayanText.delete(0,30)
         self.entryGlyphLatinText.delete(0,60)
@@ -113,36 +113,37 @@ class Editor_UI(tk.Frame):
 
 
     def onReturnPressed(self, key):
-        print "Glyph Id:   " + self.glyphId.get()
         print "Filename:   " + self.glyphFilename.get()
         print "Mayan Text: " + self.glyphMayanText.get()
         print "Latin Text: " + self.glyphLatinText.get()
 
         self.status.set("User code not recognized")
-        self.after(5000, self.doAfterDelay)
-
+        self.after(1000, self.doAfterDelay)
 
 #===========================================
-# Create new instance of Logon
+# Create new UI instance 
 #===========================================
 
-def main():
+def runEditorUI():
 
     window = tk.Tk()
     window.geometry("640x480+0+0")
 
-    editor_ui = Editor_UI(master=window)
+    '''
+    scrollbar = Scrollbar(window)
+    scrollbar.pack(side=RIGHT, fill=Y)
 
-    #window.attributes("-fullscreen", True)
+    canvas = Canvas(window, width = 200, height = 200)
+    canvas.pack()
+    img = ImageTk.PhotoImage(Image.open("./images/mayan_00.png"))  
+    canvas.create_image(30, 30, anchor=NW, image=img) 
+    '''
+
+    editor_ui = Editor_UI(master=window)
 
     window.mainloop()
 
 
 if __name__ == "__main__":
 
-    # Do not litter the world with broken .pyc files.
-    sys.dont_write_bytecode = True
-
-    print "Starting Mayan_Builder"
-
-    main()
+    runEditorUI()
