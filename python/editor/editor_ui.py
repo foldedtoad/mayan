@@ -26,7 +26,7 @@ class Editor_Listbox(tk.Frame):
 	def createWidgets(self, filesList):
 
 		self.label1 = tk.Label(self, text="Click on an image name below",
-								font=("Helvetica", 9), pady=10)
+								font=("Helvetica", 11), pady=10)
 		self.label1.pack()
 
 		self.scrollbar = Scrollbar(self.master)
@@ -38,15 +38,15 @@ class Editor_Listbox(tk.Frame):
 			self.listbox.insert(END, '{}'.format(filesList[i]))
 
 		self.listbox.focus_set()
-		self.listbox.select_set(0)
-		self.listbox.pack(fill=BOTH, padx=20)
+		self.listbox.select_set(0)	
 		self.scrollbar.config(command=self.listbox.yview)
-		self.listbox.bind('<ButtonRelease-1>', self.listbox_item_clicked)
-		self.listbox.pack()
+		self.listbox.pack(fill=BOTH, padx=20)
 
-		self.label2 = tk.Label(self, text='Press "ESC" key to quit.')
+		self.label2 = tk.Label(self, text='Press [ESC] key to quit.',
+								font=("Helvetica", 8))
 		self.label2.pack(side='bottom')
 
+		self.listbox.bind('<ButtonRelease-1>', self.listbox_item_clicked)
 		self.master.bind('<Return>', self.listbox_item_clicked)
 		self.master.bind('<Escape>', self.doShutdown)
 		return
