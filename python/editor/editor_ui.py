@@ -50,7 +50,6 @@ class Editor_Listbox(tk.Frame):
 	def listbox_item_clicked(self, *ignore):
 		imageName = self.listbox.get(self.listbox.curselection()[0])
 		Editor_Dialog(self).createDialog(imageName)
-		#dialog.createDialog(imageName)
 		return
 
 
