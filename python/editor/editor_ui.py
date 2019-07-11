@@ -25,24 +25,29 @@ class Editor_Listbox(tk.Frame):
 
 	def createWidgets(self, filesList):
 
+		self.label1 = tk.Label(self, text="Click on an image name below",
+								font=("Helvetica", 9), pady=10)
+		self.label1.pack()
+
 		self.scrollbar = Scrollbar(self.master)
 		self.scrollbar.pack(side=RIGHT, fill=Y)
+
 		self.listbox = Listbox(self.master, yscrollcommand=self.scrollbar.set)
 
 		for i in range(len(filesList)):
 			self.listbox.insert(END, '{}'.format(filesList[i]))
 
+		self.listbox.focus_set()
+		self.listbox.select_set(0)
 		self.listbox.pack(fill=BOTH, padx=20)
 		self.scrollbar.config(command=self.listbox.yview)
 		self.listbox.bind('<ButtonRelease-1>', self.listbox_item_clicked)
+		self.listbox.pack()
 
-		self.label1 = tk.StringVar()
-		self.label1 = tk.Label(self, 
-								text="Please select an image name from below",
-								font=("Helvetica", 9),
-								pady=10)
-		self.label1.pack()
+		self.label2 = tk.Label(self, text='Press "ESC" key to quit.')
+		self.label2.pack(side='bottom')
 
+		self.master.bind('<Return>', self.listbox_item_clicked)
 		self.master.bind('<Escape>', self.doShutdown)
 		return
 
@@ -83,9 +88,21 @@ class Editor_Dialog(tk.Frame):
 
 		self.buttonSave = tk.Button(self.dialog, text='Save', command=self.saveDialogClose)
 		self.buttonSave.pack(side='left', padx=10, pady=10, fill='x', expand=True)
+		self.buttonSave.bind('<Return>', self.returnPressedSave)
 
 		self.buttonExit = tk.Button(self.dialog, text='Exit', command=self.deleteDialog)
 		self.buttonExit.pack(side='right', padx=10, pady=10, fill='x', expand=True)
+		self.buttonExit.bind('<Return>', self.returnPressedDelete)
+		return
+
+
+	def returnPressedSave(self, *ignore):
+		self.saveDialogClose()
+		return
+
+
+	def returnPressedDelete(self, *ignore):
+		self.deleteDialog()
 		return
 
 
