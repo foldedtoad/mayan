@@ -74,7 +74,7 @@ if __name__ == '__main__':
 	for filename in filesList:
 		addGlyph(filename)
 
-	printGlyphs()
+	#printGlyphs()
 
 	runEditorUI(filesList)
 
