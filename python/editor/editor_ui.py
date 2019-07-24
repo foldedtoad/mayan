@@ -102,43 +102,43 @@ class Editor_Dialog(tk.Frame):
 		mayan = glyph['mayan']
 		latin = glyph['latin']
 
+		'''
 		print "name: {0}, length: {1:>6}, data: {2:40.40}..., {3}, {4}".format(
 			glyphName, len, data, mayan, latin)
+		'''
 
 		self.dialog.minsize(300, 300)
 		self.dialog.protocol("WM_DELETE_WINDOW", self.deleteDialog)
 
 		self.dialog_label = tk.Label(self.dialog, text=glyphName)
-		self.dialog_label.pack(side=tk.TOP)
+		self.dialog_label.grid(row=1, column=2, sticky=E)
 
-		self.canvas = Canvas(self.dialog, width = 200, height = 200)
-		self.canvas.pack()
-		self.img = ImageTk.PhotoImage(Image.open("./images/" + filename))  
-		self.canvas.create_image(30, 30, anchor=NW, image = self.img) 
+		self.image = ImageTk.PhotoImage(Image.open("./images/" + filename))
+		self.canvas = Canvas(self.dialog, width = 200, height = 200) 
+		self.canvas.create_image(30, 30, anchor=NW, image = self.image)
+		self.canvas.grid(row=2, column=3, columnspan=2, rowspan=2)
 
-		#'''
 		self.mayan_label = tk.Label(self.dialog, text="Mayan")
-		self.mayan_label.pack(side=tk.LEFT, padx=10)
+		self.mayan_label.grid(row=2, column=1, sticky=E, padx=5, pady=5)
 
-		self.mayan_edit = tk.Entry(self.dialog)
+		self.mayan_edit = tk.Entry(self.dialog, width=30)
 		self.mayan_edit.insert(END, mayan)
-		self.mayan_edit.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
+		self.mayan_edit.grid(row=2, column=2, sticky=W)
 
 		self.latin_label = tk.Label(self.dialog, text="Latin")
-		self.latin_label.pack(side=tk.LEFT)
+		self.latin_label.grid(row=3, column=1, sticky=E, padx=5, pady=5)
 
-		self.latin_edit = tk.Entry(self.dialog)
+		self.latin_edit = tk.Entry(self.dialog, width=30)
 		self.latin_edit.insert(END, latin)
-		self.latin_edit.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
-		#'''
+		self.latin_edit.grid(row=3, column=2, sticky=W)
 
 		self.buttonSave = tk.Button(self.dialog, text='Save', command=self.saveDialogClose)
-		self.buttonSave.pack(side=tk.LEFT, padx=10, pady=10, fill='x', expand=True)
+		self.buttonSave.grid(row=5, column=2)
 		self.buttonSave.bind('<Return>', self.returnPressedSave)
 
-		self.buttonExit = tk.Button(self.dialog, text='Exit', command=self.deleteDialog)
-		self.buttonExit.pack(side=tk.RIGHT, padx=10, pady=10, fill='x', expand=True)
-		self.buttonExit.bind('<Return>', self.returnPressedDelete)
+		self.buttonQuit = tk.Button(self.dialog, text='Quit', command=self.deleteDialog)
+		self.buttonQuit.grid(row=5, column=3)
+		self.buttonQuit.bind('<Return>', self.returnPressedDelete)
 		return
 
 
@@ -154,6 +154,15 @@ class Editor_Dialog(tk.Frame):
 
 	def saveDialogClose(self):
 		print 'save dialog'
+
+		mayan = self.mayan_edit.get()
+		#glyph['mayan'] = mayan
+		print 'mayan: {}'.format(mayan)
+
+		latin = self.latin_edit.get()
+		#glyph['latin'] = latin
+		print 'latin: {}'.format(latin)
+
 		self.dialog.destroy()
 		return
 
