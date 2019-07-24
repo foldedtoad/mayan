@@ -11,6 +11,7 @@ from os.path import isfile, join
 from editor_ui import runEditorUI
 
 glyphs = None
+filesList = None
 
 imagesPath = './images/'
 jsonFilename = 'glyphs.json'
@@ -20,9 +21,14 @@ def printGlyphs():
 		print 'glyphs == None'
 		return
 	print '=================='
-	for item in glyphs['glyphs']:
-		print "filename: {0}, length: {1:>6}, data: {2:40.40}..., {3}, {4}".format(
-			item['name'], str(item['len']), item['data'], item['mayan'], item['latin'])
+	for glyph in glyphs:
+		name  = glyph
+		len   = glyphs[glyph]['len']
+		data  = glyphs[glyph]['data']
+		mayan = glyphs[glyph]['mayan']
+		latin = glyphs[glyph]['latin']
+		print "name: {0}, length: {1:>6}, data: {2:40.40}..., {3}, {4}".format(
+			name, len, data, mayan, latin)
 	print '=================='
 
 
@@ -35,7 +41,7 @@ def loadGlyphs():
 			print 'loaded JSON'
 	except:
 		print 'create JSON'
-		glyphs = {'glyphs': []}
+		glyphs = { }
 		pass
 	return
 
@@ -44,8 +50,9 @@ def saveGlyphs():
 	global glyphs
 	try:
 		with open(jsonFilename, 'w') as outfile:
-			json.dump(glyphs, outfile, indent=4)
+			json.dump(glyphs, outfile, indent=4, sort_keys=True)
 		outfile.close()
+		print 'glyphs.json saved'
 	except:
 		print 'failed to save JSON data'
 		pass
@@ -53,22 +60,26 @@ def saveGlyphs():
 
 def addGlyph(filename):
 	global glyphs
+
 	with open(imagesPath + filename, mode='rb') as file:
 		data = file.read();
 		length = len(data)
 		content = data.encode('base64')
 		name, extension = os.path.splitext(filename)
-		glyphs['glyphs'].append({'name':name, 'len': length, 'data': content, 'mayan': 'n/a', 'latin': 'n/a'})
+		glyph = {'len': length, 'data': content, 'mayan': 'mayan text', 'latin': 'latin text'}
+		glyphs[name] = glyph
 		file.close()
 
-def updateGlyphs(filesList):
+
+def updateNewGlyphs():
 	global glyphs
+	global filesList
+
 	print 'updateGlyphs start'
 	newFiles = filesList[:]
-	for filename in newFiles[:]:
-		index = filename.index(filename)
-		for glyph in glyphs['glyphs']:
-			glyphname = glyph['name'] + '.png'
+	for glyph in glyphs:
+		for filename in newFiles[:]:
+			glyphname = glyph + '.png'
 			if glyphname == filename:
 				print 'exists: {}'.format(filename)
 				newFiles.remove(filename)
@@ -79,44 +90,34 @@ def updateGlyphs(filesList):
 	return
 
 
-def buildFileList():
+def buildImageFilesList():
+	global filesList
 	filesList = []
 	for root, dir, files in os.walk(imagesPath):
 		for filename in files:
 			if '.png' in filename.lower():
-				filesList.append(os.path.join('.', filename))
+				filesList.append(os.path.join('', filename))
 	filesList.sort()
-	return filesList
+	return
 
 
-def buildGlyphsNamesList():
-	global glyphs
-	namesList = []
-	if glyphs == None:
-		return namesList
-	for node in glyphs['glyphs']:
-		name = node['name'] + '.png'
-		namesList.append(name)
-	namesList.sort()
-	return namesList
-
-
-if __name__ == '__main__':
-
+def editor():
 	print "editor start"
 
-	filesList = buildFileList()
+	buildImageFilesList()
 
 	loadGlyphs()
 
-	glyphNames = buildGlyphsNamesList()
+	updateNewGlyphs()
 
-	updateGlyphs(filesList)
-
-	runEditorUI(filesList)
+	runEditorUI(filesList, glyphs)
 
 	saveGlyphs()
 
 	print "editor end"
 
+
+if __name__ == '__main__':
+
+	editor()
 	sys.exit(0)
