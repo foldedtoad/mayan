@@ -94,8 +94,10 @@ class Editor_Dialog(tk.Frame):
 	def createDialog(self, glyphName):
 		global glyphs
 
-		filename = glyphName + '.png'
-		glyph = glyphs[glyphName]
+		self.glyphName = glyphName
+
+		filename = self.glyphName + '.png'
+		glyph = glyphs[self.glyphName]
 
 		len   = glyph['len']
 		data  = glyph['data']
@@ -154,15 +156,13 @@ class Editor_Dialog(tk.Frame):
 
 	def saveDialogClose(self):
 		print 'save dialog'
-
+		glyph = glyphs[self.glyphName]
 		mayan = self.mayan_edit.get()
-		#glyph['mayan'] = mayan
+		glyph['mayan'] = mayan
 		print 'mayan: {}'.format(mayan)
-
 		latin = self.latin_edit.get()
-		#glyph['latin'] = latin
+		glyph['latin'] = latin
 		print 'latin: {}'.format(latin)
-
 		self.dialog.destroy()
 		return
 
