@@ -53,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void insertImage(String imageId, byte[] image, String mayan, String latin) {
+    public void insertImage(String imageId, byte[] image) { //, String mayan, String latin) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(IMAGE_ID, imageId);

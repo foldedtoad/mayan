@@ -1,6 +1,7 @@
 package com.callender.mayancal.db;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -65,6 +67,8 @@ public class MainActivity extends Activity {
         textViewMayan.setText("");
         textViewLatin.setText("");
         imageView.setImageResource(R.drawable.splash);
+
+        new LoadDatabaseTask().execute(0);
     }
 
     public String loadJSONFromAsset() {
@@ -103,6 +107,8 @@ public class MainActivity extends Activity {
 
             jsonGlyphsArray = jsonObject.getJSONArray("");
 
+            Log.d(TAG,"** json: len=" + jsonGlyphsArray.length());
+
             for (int i = 0; i < jsonGlyphsArray.length(); i++) {
 
                 JSONObject jo_inside = jsonGlyphsArray.getJSONObject(i);
@@ -110,15 +116,15 @@ public class MainActivity extends Activity {
                 String name  = jo_inside.getString("name");
                 int    len   = jo_inside.getInt("len");
                 String data  = jo_inside.getString("data");
-                String mayan = jo_inside.getString("mayan");
-                String latin = jo_inside.getString("latin");
+                //String mayan = jo_inside.getString("mayan");
+                //String latin = jo_inside.getString("latin");
 
                 byte[] image = Base64.decode(data.getBytes(), Base64.DEFAULT);
 
-                Log.d(TAG,"** Details: name: " + name + ", len=" + len +
-                        ", mayan=" + mayan + ", latin=" + latin);
+                Log.d(TAG,"** Details: name: " + name + ", len=" + len); // +
+                //        ", mayan=" + mayan + ", latin=" + latin);
 
-                databaseHelper.insertImage(name, image, mayan, latin);
+                databaseHelper.insertImage(name, image); //, mayan, latin);
 
             }
         } catch (JSONException e) {
@@ -170,6 +176,31 @@ public class MainActivity extends Activity {
         return super.onTouchEvent(event);
     }
 
+    private class LoadDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
+
+        private final ProgressDialog LoadProgressDialog = new ProgressDialog(MainActivity.this);
+
+        protected void onPreExecute() {
+            Log.d(TAG, "** onPreExecute");
+            this.LoadProgressDialog.setMessage("Loading Image Database...");
+            this.LoadProgressDialog.show();
+        }
+
+        @Override
+        protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
+            Log.d(TAG, "** doInBackground");
+            loadGlyphsJSON();
+            return databaseHelper.getImage(image_id);
+        }
+
+        protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
+            Log.d(TAG, "** onPostExecute: ImageID " + imageHelper.getImageId());
+            if (this.LoadProgressDialog.isShowing()) {
+                this.LoadProgressDialog.dismiss();
+            }
+            mainLayout.setVisibility(View.VISIBLE);
+        }
+    }
 
     private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
 
