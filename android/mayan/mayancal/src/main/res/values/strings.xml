@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">MayanCal</string>
     <string name="title">title</string>
+    <string name="splash_title">Creation</string>
     <string name="mayan_text">Mayan text</string>
     <string name="latin_text">Latin text</string>
     <string name="glyphs_filename">glyphs.json"</string>

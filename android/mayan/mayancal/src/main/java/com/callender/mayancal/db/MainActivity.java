@@ -1,7 +1,6 @@
 package com.callender.mayancal.db;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -52,7 +50,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
 
         mainLayout = findViewById(R.id.main_layout);
-        mainLayout.setVisibility(View.INVISIBLE);
+        //mainLayout.setVisibility(View.INVISIBLE);
 
         image_name_format = getString(R.string.image_name_format);
 
@@ -63,7 +61,10 @@ public class MainActivity extends Activity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        new LoadDatabaseTask().execute(0);
+        textViewTitle.setText(R.string.splash_title);
+        textViewMayan.setText("");
+        textViewLatin.setText("");
+        imageView.setImageResource(R.drawable.splash);
     }
 
     public String loadJSONFromAsset() {
@@ -100,21 +101,24 @@ public class MainActivity extends Activity {
         try {
             JSONObject jsonObject = new JSONObject(loadJSONFromAsset());
 
-            jsonGlyphsArray = jsonObject.getJSONArray("glyphs");
+            jsonGlyphsArray = jsonObject.getJSONArray("");
 
             for (int i = 0; i < jsonGlyphsArray.length(); i++) {
 
                 JSONObject jo_inside = jsonGlyphsArray.getJSONObject(i);
 
-                String name = jo_inside.getString("name");
-                int    len  = jo_inside.getInt("len");
-                String data = jo_inside.getString("data");
+                String name  = jo_inside.getString("name");
+                int    len   = jo_inside.getInt("len");
+                String data  = jo_inside.getString("data");
+                String mayan = jo_inside.getString("mayan");
+                String latin = jo_inside.getString("latin");
 
                 byte[] image = Base64.decode(data.getBytes(), Base64.DEFAULT);
 
-                Log.d(TAG,"** Details: name: " + name + ", len=" + len);
+                Log.d(TAG,"** Details: name: " + name + ", len=" + len +
+                        ", mayan=" + mayan + ", latin=" + latin);
 
-                databaseHelper.insetImage(name, image);
+                databaseHelper.insertImage(name, image, mayan, latin);
 
             }
         } catch (JSONException e) {
@@ -166,34 +170,6 @@ public class MainActivity extends Activity {
         return super.onTouchEvent(event);
     }
 
-    private class LoadDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
-
-        private final ProgressDialog LoadProgressDialog = new ProgressDialog(MainActivity.this);
-
-        protected void onPreExecute() {
-            Log.d(TAG, "** onPreExecute");
-            this.LoadProgressDialog.setMessage("Loading Image Database...");
-            this.LoadProgressDialog.show();
-        }
-
-        @Override
-        protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
-            Log.d(TAG, "** doInBackground");
-            image_id = "mayan_creation";
-            loadGlyphsJSON();
-            return databaseHelper.getImage(image_id);
-        }
-
-        protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
-            Log.d(TAG, "** onPostExecute: ImageID " + imageHelper.getImageId());
-            if (this.LoadProgressDialog.isShowing()) {
-                this.LoadProgressDialog.dismiss();
-            }
-            mainLayout.setVisibility(View.VISIBLE);
-            setUpImage(imageHelper.getImageByteArray());
-        }
-    }
-
 
     private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
 
@@ -222,6 +198,8 @@ public class MainActivity extends Activity {
         Log.d(TAG, "** setUpImage");
 
         textViewTitle.setText(image_id);
+        textViewMayan.setText("mayan pronouncation");
+        textViewLatin.setText("english annotation");
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
