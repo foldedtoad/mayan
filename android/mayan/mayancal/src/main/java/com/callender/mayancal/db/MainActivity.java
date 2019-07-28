@@ -37,8 +37,6 @@ public class MainActivity extends Activity {
     private TextView textViewLatin;
     private TextView textViewMayan;
 
-    JSONArray jsonGlyphsArray;
-
     float  swipe_x1,swipe_x2;
     static final int MIN_DISTANCE = 150; // x-coordinate must travel to indicate a swipe
 
@@ -52,7 +50,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
 
         mainLayout = findViewById(R.id.main_layout);
-        //mainLayout.setVisibility(View.INVISIBLE);
 
         image_name_format = getString(R.string.image_name_format);
 
@@ -103,17 +100,15 @@ public class MainActivity extends Activity {
         Log.d(TAG, "** loadGlyphsJSON");
 
         try {
-            JSONObject jsonObject = new JSONObject(loadJSONFromAsset());
+            String json = loadJSONFromAsset();
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray jsonArray = jsonObject.names();
 
-            jsonGlyphsArray = jsonObject.getJSONArray("");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String name = jsonArray.getString(i);
+                String string = jsonObject.getJSONObject(name).toString();
+                JSONObject jo_inside = new JSONObject(string);
 
-            Log.d(TAG,"** json: len=" + jsonGlyphsArray.length());
-
-            for (int i = 0; i < jsonGlyphsArray.length(); i++) {
-
-                JSONObject jo_inside = jsonGlyphsArray.getJSONObject(i);
-
-                String name  = jo_inside.getString("name");
                 int    len   = jo_inside.getInt("len");
                 String data  = jo_inside.getString("data");
                 //String mayan = jo_inside.getString("mayan");
