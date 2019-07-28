@@ -111,15 +111,15 @@ public class MainActivity extends Activity {
 
                 int    len   = jo_inside.getInt("len");
                 String data  = jo_inside.getString("data");
-                //String mayan = jo_inside.getString("mayan");
-                //String latin = jo_inside.getString("latin");
+                String mayan = jo_inside.getString("mayan");
+                String latin = jo_inside.getString("latin");
 
                 byte[] image = Base64.decode(data.getBytes(), Base64.DEFAULT);
 
-                Log.d(TAG,"** Details: name: " + name + ", len=" + len); // +
-                //        ", mayan=" + mayan + ", latin=" + latin);
+                Log.d(TAG,"** Details: name: " + name + ", len=" +
+                        ", mayan=" + mayan + ", latin=" + latin);
 
-                databaseHelper.insertImage(name, image); //, mayan, latin);
+                databaseHelper.insertImage(name, image, mayan, latin);
 
             }
         } catch (JSONException e) {
@@ -212,7 +212,10 @@ public class MainActivity extends Activity {
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
             if (imageHelper.getImageId() != null) {
                 Log.d(TAG, "** onPostExecute: ImageID: " + imageHelper.getImageId());
-                setUpImage(imageHelper.getImageByteArray());
+                byte[] image = imageHelper.getImageByteArray();
+                String mayan = imageHelper.getMayanText();
+                String latin = imageHelper.getLatinText();
+                setUpImage(image, mayan, latin);
             }
             else {
                 Log.d(TAG, "** onPostExecute: ImageID: null");
@@ -220,12 +223,12 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void setUpImage(byte[] bytes) {
+    private void setUpImage(byte[] bytes, String mayan, String latin) {
         Log.d(TAG, "** setUpImage");
 
         textViewTitle.setText(image_id);
-        textViewMayan.setText("mayan pronouncation");
-        textViewLatin.setText("english annotation");
+        textViewMayan.setText(mayan);
+        textViewLatin.setText(latin);
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
