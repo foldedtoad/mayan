@@ -11,9 +11,11 @@ from os.path import isfile, join
 from editor_ui import runEditorUI
 
 glyphs = None
-filesList = None
+imageFilesList = None
+soundFilesList = None
 
 imagesPath = './images/'
+soundsPath = './sounds/'
 jsonFilename = 'glyphs.json'
 
 def printGlyphs():
@@ -23,12 +25,12 @@ def printGlyphs():
 	print '=================='
 	for glyph in glyphs:
 		name  = glyph
-		len   = glyphs[glyph]['len']
-		data  = glyphs[glyph]['data']
+		data  = glyphs[glyph]['image']
+		data  = glyphs[glyph]['sound']
 		mayan = glyphs[glyph]['mayan']
 		latin = glyphs[glyph]['latin']
-		print "name: {0}, length: {1:>6}, data: {2:40.40}..., {3}, {4}".format(
-			name, len, data, mayan, latin)
+		print "name: {0}, image: {1:40.40}..., image: {2:40.40}..., {3}, {4}".format(
+			name, image, sound, mayan, latin)
 	print '=================='
 
 
@@ -58,25 +60,45 @@ def saveGlyphs():
 		pass
 
 
-def addGlyph(filename):
+def findSoundFile(imageFilename):
+	soundFilename = None
+	name, extension = os.path.splitext(imageFilename)
+	filename = name + '.wav'
+	if os.path.isfile(soundsPath + filename) == True:
+		soundFilename = filename
+		#print "image {} :: sound: {}".format(imageFilename, soundFilename)
+	return soundFilename
+
+
+def addGlyph(imageFilename):
 	global glyphs
 
-	with open(imagesPath + filename, mode='rb') as file:
+	with open(imagesPath + imageFilename, mode='rb') as file:
 		data = file.read();
-		length = len(data)
-		content = data.encode('base64')
-		name, extension = os.path.splitext(filename)
-		glyph = {'len': length, 'data': content, 'mayan': 'mayan text', 'latin': 'latin text'}
-		glyphs[name] = glyph
+		image = data.encode('base64')
 		file.close()
+
+		soundFilename = findSoundFile(imageFilename)
+		if soundFilename != None:
+			with open(soundsPath + soundFilename, mode='rb') as file:
+				data = file.read()
+				sound = data.encode('base64')
+				file.close()
+		else:
+			sound = ""
+
+		name, extension = os.path.splitext(imageFilename)
+		glyph = {'image': image, 'sound': sound, 'mayan': 'mayan', 'latin': 'latin'}
+		glyphs[name] = glyph
+		return
 
 
 def updateNewGlyphs():
 	global glyphs
-	global filesList
+	global imageFilesList
 
 	print 'updateGlyphs start'
-	newFiles = filesList[:]
+	newFiles = imageFilesList[:]
 	for glyph in glyphs:
 		for filename in newFiles[:]:
 			glyphname = glyph + '.png'
@@ -91,26 +113,36 @@ def updateNewGlyphs():
 
 
 def buildImageFilesList():
-	global filesList
-	filesList = []
+	global imageFilesList
+	imageFilesList = []
 	for root, dir, files in os.walk(imagesPath):
 		for filename in files:
 			if '.png' in filename.lower():
-				filesList.append(os.path.join('', filename))
-	filesList.sort()
+				imageFilesList.append(os.path.join('', filename))
+	imageFilesList.sort()
 	return
 
+def buildSoundFilesList():
+	global soundFilesList
+	soundFilesList = []
+	for root, dir, files in os.walk(soundsPath):
+		for filename in files:
+			if '.wav' in filename.lower():
+				soundFilesList.append(os.path.join('', filename))
+	soundFilesList.sort()
+	return
 
 def editor():
 	print "editor start"
 
 	buildImageFilesList()
+	buildSoundFilesList()
 
 	loadGlyphs()
 
 	updateNewGlyphs()
 
-	runEditorUI(filesList, glyphs)
+	runEditorUI(imageFilesList, soundFilesList, glyphs)
 
 	saveGlyphs()
 
