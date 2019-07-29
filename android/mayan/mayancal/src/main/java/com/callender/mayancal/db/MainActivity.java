@@ -69,11 +69,9 @@ public class MainActivity extends Activity {
     }
 
     public String loadJSONFromAsset() {
-
         int byteCount;
-        Log.d(TAG, "** loadJSONFromAsset");
-
         String json;
+
         try {
             InputStream inStream = this.getAssets().open(getString(R.string.glyphs_filename));
 
@@ -91,14 +89,10 @@ public class MainActivity extends Activity {
             ex.printStackTrace();
             return null;
         }
-        Log.d(TAG, "** loadJSONFromAsset OK, byteCount " + byteCount);
         return json;
     }
 
     private void loadGlyphsJSON() {
-
-        Log.d(TAG, "** loadGlyphsJSON");
-
         try {
             String json = loadJSONFromAsset();
             JSONObject jsonObject = new JSONObject(json);
@@ -116,8 +110,8 @@ public class MainActivity extends Activity {
 
                 byte[] image = Base64.decode(data.getBytes(), Base64.DEFAULT);
 
-                Log.d(TAG,"** Details: name: " + name + ", len=" +
-                        ", mayan=" + mayan + ", latin=" + latin);
+                //Log.d(TAG,"** Details: name: " + name + ", len=" +
+                //        ", mayan=" + mayan + ", latin=" + latin);
 
                 databaseHelper.insertImage(name, image, mayan, latin);
 
@@ -126,8 +120,6 @@ public class MainActivity extends Activity {
             Log.d(TAG, "** loadGlyphsJSON exception: " + e.getMessage());
             return;
         }
-
-        Log.d(TAG, "** loadGlyphsJSON OK");
     }
 
     @Override
@@ -149,18 +141,18 @@ public class MainActivity extends Activity {
  
                     // Left-to-Right swipe direction
                     if (swipe_x2 > swipe_x1) {
-                        Log.d(TAG, "Swipe Direction [Previous]");
+                        //Log.d(TAG, "Swipe Direction [Previous]");
                         image_id = String.format(image_name_format, index);
-                        Log.d(TAG, "image_id:" + image_id);
+                        //Log.d(TAG, "image_id:" + image_id);
                         new LoadImageFromDatabaseTask().execute(0);
                         if (index > 0)  // smallest Mayan digit: 0
                             index--;
                     }
                     // Right-to-left swipe direction
                     else {
-                        Log.d(TAG, "Swipe Direction [Next]");
+                        //Log.d(TAG, "Swipe Direction [Next]");
                         image_id = String.format(image_name_format, index);
-                        Log.d(TAG, "image_id:" + image_id);
+                        //Log.d(TAG, "image_id:" + image_id);
                         new LoadImageFromDatabaseTask().execute(0);
                         if (index < 19)  // largest Mayan digit: 19
                             index++;
@@ -176,20 +168,17 @@ public class MainActivity extends Activity {
         private final ProgressDialog LoadProgressDialog = new ProgressDialog(MainActivity.this);
 
         protected void onPreExecute() {
-            Log.d(TAG, "** onPreExecute");
             this.LoadProgressDialog.setMessage("Loading Image Database...");
             this.LoadProgressDialog.show();
         }
 
         @Override
         protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
-            Log.d(TAG, "** doInBackground");
             loadGlyphsJSON();
             return databaseHelper.getImage(image_id);
         }
 
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
-            Log.d(TAG, "** onPostExecute: ImageID " + imageHelper.getImageId());
             if (this.LoadProgressDialog.isShowing()) {
                 this.LoadProgressDialog.dismiss();
             }
@@ -205,13 +194,11 @@ public class MainActivity extends Activity {
 
         @Override
         protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
-            Log.d(TAG, "** doInBackground");
             return databaseHelper.getImage(image_id);
         }
 
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
             if (imageHelper.getImageId() != null) {
-                Log.d(TAG, "** onPostExecute: ImageID: " + imageHelper.getImageId());
                 byte[] image = imageHelper.getImageByteArray();
                 String mayan = imageHelper.getMayanText();
                 String latin = imageHelper.getLatinText();
@@ -224,7 +211,6 @@ public class MainActivity extends Activity {
     }
 
     private void setUpImage(byte[] bytes, String mayan, String latin) {
-        Log.d(TAG, "** setUpImage");
 
         textViewTitle.setText(image_id);
         textViewMayan.setText(mayan);

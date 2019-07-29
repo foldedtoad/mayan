@@ -65,7 +65,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ImageHelper getImage(String imageId) {
-        Log.d(TAG, "** getImage");
         SQLiteDatabase db = this.getWritableDatabase();
 
         String[] string = new String[] {COL_ID, IMAGE_ID, IMAGE_BITMAP, MAYAN_TEXT, LATIN_TEXT};
