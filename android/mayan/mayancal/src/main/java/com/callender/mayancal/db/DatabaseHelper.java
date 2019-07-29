@@ -68,8 +68,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String[] string = new String[] {COL_ID, IMAGE_ID, IMAGE_BITMAP, MAYAN_TEXT, LATIN_TEXT};
-        Log.d(TAG, "query: " + string[0] + ", " + string[1] + ", " + string[2] +
-                ", " + string[3] + ", " + string[4]);
 
         Cursor cursor =
                 db.query(TABLE_IMAGE, string, IMAGE_ID +

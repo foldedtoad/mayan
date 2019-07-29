@@ -188,9 +188,7 @@ public class MainActivity extends Activity {
 
     private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
 
-        protected void onPreExecute() {
-            Log.d(TAG, "** onPreExecute");
-        }
+        protected void onPreExecute() { }
 
         @Override
         protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
