@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
     private TextView textViewLatin;
     private TextView textViewMayan;
 
+    boolean firstTouch = false;
     float  swipe_x1,swipe_x2;
     static final int MIN_DISTANCE = 150; // x-coordinate must travel to indicate a swipe
 
@@ -103,17 +104,18 @@ public class MainActivity extends Activity {
                 String string = jsonObject.getJSONObject(name).toString();
                 JSONObject jo_inside = new JSONObject(string);
 
-                int    len   = jo_inside.getInt("len");
-                String data  = jo_inside.getString("data");
+                String _image  = jo_inside.getString("image");
+                String _sound  = jo_inside.getString("sound");
                 String mayan = jo_inside.getString("mayan");
                 String latin = jo_inside.getString("latin");
 
-                byte[] image = Base64.decode(data.getBytes(), Base64.DEFAULT);
+                byte[] image = Base64.decode(_image.getBytes(), Base64.DEFAULT);
+                byte[] sound = Base64.decode(_sound.getBytes(), Base64.DEFAULT);
 
                 //Log.d(TAG,"** Details: name: " + name + ", len=" +
                 //        ", mayan=" + mayan + ", latin=" + latin);
 
-                databaseHelper.insertImage(name, image, mayan, latin);
+                databaseHelper.insertImage(name, image, sound, mayan, latin);
 
             }
         } catch (JSONException e) {
@@ -129,6 +131,21 @@ public class MainActivity extends Activity {
 
             // Finger down (start of gesture)
             case MotionEvent.ACTION_DOWN:
+
+                /*
+                long time = System.currentTimeMillis();
+                if (firstTouch && (System.currentTimeMillis() - time) <= 300) {
+                    // do stuff here for double tap
+                    Log.d(TAG, "** DOUBLE TAP ** second tap ");
+                    firstTouch = false;
+                }
+                else {
+                    firstTouch = true;
+                    time = System.currentTimeMillis();
+                    Log.d(TAG, "** SINGLE  TAP ** First Tap time  " + time);
+                }
+                */
+
                 swipe_x1 = event.getX();
                 break;
 
@@ -198,6 +215,7 @@ public class MainActivity extends Activity {
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
             if (imageHelper.getImageId() != null) {
                 byte[] image = imageHelper.getImageByteArray();
+                byte[] sound = imageHelper.getSoundByteArray();
                 String mayan = imageHelper.getMayanText();
                 String latin = imageHelper.getLatinText();
                 setUpImage(image, mayan, latin);
