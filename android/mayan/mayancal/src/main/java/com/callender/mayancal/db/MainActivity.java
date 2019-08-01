@@ -37,18 +37,22 @@ public class MainActivity extends Activity {
     private TextView textViewLatin;
     private TextView textViewMayan;
 
-    boolean firstTouch = false;
+    boolean firstTap = false;
+    long tapTime;
     float  swipe_x1,swipe_x2;
     static final int MIN_DISTANCE = 150; // x-coordinate must travel to indicate a swipe
 
     int index = 0;
     String image_id;
     String image_name_format;
+    byte[] sound_clip;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        tapTime = System.currentTimeMillis();
 
         mainLayout = findViewById(R.id.main_layout);
 
@@ -132,20 +136,19 @@ public class MainActivity extends Activity {
             // Finger down (start of gesture)
             case MotionEvent.ACTION_DOWN:
 
-                /*
-                long time = System.currentTimeMillis();
-                if (firstTouch && (System.currentTimeMillis() - time) <= 300) {
+                // double tap --> play sound clip
+                if (firstTap && (System.currentTimeMillis() - tapTime) <= 300) {
                     // do stuff here for double tap
                     Log.d(TAG, "** DOUBLE TAP ** second tap ");
-                    firstTouch = false;
+                    playSoundClip();
+                    firstTap = false;
                 }
                 else {
-                    firstTouch = true;
-                    time = System.currentTimeMillis();
-                    Log.d(TAG, "** SINGLE  TAP ** First Tap time  " + time);
+                    firstTap = true;
+                    tapTime = System.currentTimeMillis();
                 }
-                */
 
+                // detect initial swipe action
                 swipe_x1 = event.getX();
                 break;
 
@@ -215,10 +218,12 @@ public class MainActivity extends Activity {
         protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
             if (imageHelper.getImageId() != null) {
                 byte[] image = imageHelper.getImageByteArray();
-                byte[] sound = imageHelper.getSoundByteArray();
                 String mayan = imageHelper.getMayanText();
                 String latin = imageHelper.getLatinText();
                 setUpImage(image, mayan, latin);
+
+                sound_clip  = imageHelper.getSoundByteArray();
+
             }
             else {
                 Log.d(TAG, "** onPostExecute: ImageID: null");
@@ -226,15 +231,23 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void setUpImage(byte[] bytes, String mayan, String latin) {
+    private void setUpImage(byte[] image, String mayan, String latin) {
 
         textViewTitle.setText(image_id);
         textViewMayan.setText(mayan);
         textViewLatin.setText(latin);
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
 
         imageView.setImageBitmap(bitmap);
+    }
+
+    private void playSoundClip() {
+        Log.d(TAG, "play sound clip");
+
+        SoundHelper soundHelper = new SoundHelper();
+        soundHelper.prepare(sound_clip);
+        soundHelper.play();
     }
 
 }
