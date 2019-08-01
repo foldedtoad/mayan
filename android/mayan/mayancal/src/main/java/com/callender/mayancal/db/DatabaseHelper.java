@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void insertImage(String imageId, byte[] image, byte[] sound, String mayan, String latin) {
+    void insertImage(String imageId, byte[] image, byte[] sound, String mayan, String latin) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(IMAGE_ID, imageId);
@@ -67,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ImageHelper getImage(String imageId) {
+    ImageHelper getImage(String imageId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String[] string = new String[] {COL_ID, IMAGE_ID, IMAGE_BITMAP, SOUND_BITMAP, MAYAN_TEXT, LATIN_TEXT};

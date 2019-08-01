@@ -1,5 +1,6 @@
 package com.callender.mayancal.db;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -85,6 +86,7 @@ public class MainActivity extends Activity {
             byte[] buffer = new byte[size];
 
             byteCount = inStream.read(buffer);
+            if (byteCount == 0) { return null; }
 
             inStream.close();
 
@@ -124,7 +126,6 @@ public class MainActivity extends Activity {
             }
         } catch (JSONException e) {
             Log.d(TAG, "** loadGlyphsJSON exception: " + e.getMessage());
-            return;
         }
     }
 
@@ -183,6 +184,7 @@ public class MainActivity extends Activity {
         return super.onTouchEvent(event);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class LoadDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
 
         private final ProgressDialog LoadProgressDialog = new ProgressDialog(MainActivity.this);
@@ -206,6 +208,7 @@ public class MainActivity extends Activity {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
 
         protected void onPreExecute() { }
