@@ -11,7 +11,7 @@ from Tkinter import *
 from PIL import ImageTk,Image
 
 glyphs = None
-filesList = None
+imageFilesList = None
 
 #===========================================
 # Define Editor_Listbox class
@@ -28,7 +28,7 @@ class Editor_Listbox(tk.Frame):
 
 	def createWidgets(self):
 		global glyphs
-		global filesList
+		#global imageFilesList
 
 		self.label1 = tk.Label(self, text="Click on an image name below",
 								font=("Helvetica", 11), pady=10)
@@ -99,14 +99,15 @@ class Editor_Dialog(tk.Frame):
 		filename = self.glyphName + '.png'
 		glyph = glyphs[self.glyphName]
 
-		len   = glyph['len']
-		data  = glyph['data']
+
+		image = glyph['image']
+		sound = glyph['sound']
 		mayan = glyph['mayan']
 		latin = glyph['latin']
 
 		'''
-		print "name: {0}, length: {1:>6}, data: {2:40.40}..., {3}, {4}".format(
-			glyphName, len, data, mayan, latin)
+		print "name: {0}, image: {1:40.40}..., sound: {2:40.40}..., {3}, {4}".format(
+			glyphName, len, image, sound, mayan, latin)
 		'''
 
 		self.dialog.minsize(300, 300)
@@ -177,12 +178,12 @@ class Editor_Dialog(tk.Frame):
 # Create new UI instance 
 #===========================================
 
-def runEditorUI(_filesList, _glyphs):
+def runEditorUI(_imageFilesList, _soundFilesList, _glyphs):
 
 	global glyphs
 
 	glyphs = _glyphs
-	filesList = _filesList
+	#imageFilesList = _imageFilesList
 
 	window = tk.Tk()
 	window.geometry("320x240+0+0")
@@ -194,7 +195,7 @@ def runEditorUI(_filesList, _glyphs):
 
 if __name__ == "__main__":
 
-	filesList = ["mayan_00.png", "mayan_01.png", "mayan_02.png"]
+	imageFilesList = ["mayan_00.png", "mayan_01.png", "mayan_02.png"]
 	glyphs = {}
 
 	runEditorUI(filesList, glyphs)

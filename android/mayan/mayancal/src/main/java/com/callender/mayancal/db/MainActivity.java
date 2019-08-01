@@ -37,17 +37,22 @@ public class MainActivity extends Activity {
     private TextView textViewLatin;
     private TextView textViewMayan;
 
+    boolean firstTap = false;
+    long tapTime;
     float  swipe_x1,swipe_x2;
     static final int MIN_DISTANCE = 150; // x-coordinate must travel to indicate a swipe
 
     int index = 0;
     String image_id;
     String image_name_format;
+    byte[] sound_clip;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        tapTime = System.currentTimeMillis();
 
         mainLayout = findViewById(R.id.main_layout);
 
@@ -103,17 +108,18 @@ public class MainActivity extends Activity {
                 String string = jsonObject.getJSONObject(name).toString();
                 JSONObject jo_inside = new JSONObject(string);
 
-                int    len   = jo_inside.getInt("len");
-                String data  = jo_inside.getString("data");
+                String _image  = jo_inside.getString("image");
+                String _sound  = jo_inside.getString("sound");
                 String mayan = jo_inside.getString("mayan");
                 String latin = jo_inside.getString("latin");
 
-                byte[] image = Base64.decode(data.getBytes(), Base64.DEFAULT);
+                byte[] image = Base64.decode(_image.getBytes(), Base64.DEFAULT);
+                byte[] sound = Base64.decode(_sound.getBytes(), Base64.DEFAULT);
 
                 //Log.d(TAG,"** Details: name: " + name + ", len=" +
                 //        ", mayan=" + mayan + ", latin=" + latin);
 
-                databaseHelper.insertImage(name, image, mayan, latin);
+                databaseHelper.insertImage(name, image, sound, mayan, latin);
 
             }
         } catch (JSONException e) {
@@ -129,6 +135,20 @@ public class MainActivity extends Activity {
 
             // Finger down (start of gesture)
             case MotionEvent.ACTION_DOWN:
+
+                // double tap --> play sound clip
+                if (firstTap && (System.currentTimeMillis() - tapTime) <= 300) {
+                    // do stuff here for double tap
+                    Log.d(TAG, "** DOUBLE TAP ** second tap ");
+                    playSoundClip();
+                    firstTap = false;
+                }
+                else {
+                    firstTap = true;
+                    tapTime = System.currentTimeMillis();
+                }
+
+                // detect initial swipe action
                 swipe_x1 = event.getX();
                 break;
 
@@ -201,6 +221,9 @@ public class MainActivity extends Activity {
                 String mayan = imageHelper.getMayanText();
                 String latin = imageHelper.getLatinText();
                 setUpImage(image, mayan, latin);
+
+                sound_clip  = imageHelper.getSoundByteArray();
+
             }
             else {
                 Log.d(TAG, "** onPostExecute: ImageID: null");
@@ -208,15 +231,23 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void setUpImage(byte[] bytes, String mayan, String latin) {
+    private void setUpImage(byte[] image, String mayan, String latin) {
 
         textViewTitle.setText(image_id);
         textViewMayan.setText(mayan);
         textViewLatin.setText(latin);
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
 
         imageView.setImageBitmap(bitmap);
+    }
+
+    private void playSoundClip() {
+        Log.d(TAG, "play sound clip");
+
+        SoundHelper soundHelper = new SoundHelper();
+        soundHelper.prepare(sound_clip);
+        soundHelper.play();
     }
 
 }

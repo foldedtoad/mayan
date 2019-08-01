@@ -6,6 +6,7 @@ public class ImageHelper {
 
     private String imageId;
     private byte[] imageByteArray;
+    private byte[] soundByteArray;
     private String mayanText;
     private String latinText;
 
@@ -17,8 +18,13 @@ public class ImageHelper {
     public byte[] getImageByteArray() {
         return imageByteArray;
     }
-    public void setImageByteArray(byte[] imageByteArray) {
-        this.imageByteArray = imageByteArray;
+    public void setImageByteArray(byte[] imageByteArray) { this.imageByteArray = imageByteArray; }
+
+    public byte[] getSoundByteArray() {
+        return soundByteArray;
+    }
+    public void setSoundByteArray(byte[] soundByteArray) {
+        this.soundByteArray = soundByteArray;
     }
 
     public String getMayanText() { return mayanText; }
