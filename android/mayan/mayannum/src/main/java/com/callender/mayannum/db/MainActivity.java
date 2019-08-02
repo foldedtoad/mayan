@@ -1,4 +1,4 @@
-package com.callender.mayancal.db;
+package com.callender.mayannum.db;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
     final String TAG = "MainActivity";
 
     private ConstraintLayout mainLayout;
-    private com.callender.mayancal.db.DatabaseHelper databaseHelper;
+    private com.callender.mayannum.db.DatabaseHelper databaseHelper;
     private ImageView imageView;
 
     private TextView textViewTitle;
@@ -185,7 +185,7 @@ public class MainActivity extends Activity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class LoadDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
+    private class LoadDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayannum.db.ImageHelper> {
 
         private final ProgressDialog LoadProgressDialog = new ProgressDialog(MainActivity.this);
 
@@ -195,12 +195,12 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
+        protected com.callender.mayannum.db.ImageHelper doInBackground(Integer... integers) {
             loadGlyphsJSON();
             return databaseHelper.getImage(image_id);
         }
 
-        protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
+        protected void onPostExecute(com.callender.mayannum.db.ImageHelper imageHelper) {
             if (this.LoadProgressDialog.isShowing()) {
                 this.LoadProgressDialog.dismiss();
             }
@@ -209,16 +209,16 @@ public class MainActivity extends Activity {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayancal.db.ImageHelper> {
+    private class LoadImageFromDatabaseTask extends AsyncTask<Integer, Integer, com.callender.mayannum.db.ImageHelper> {
 
         protected void onPreExecute() { }
 
         @Override
-        protected com.callender.mayancal.db.ImageHelper doInBackground(Integer... integers) {
+        protected com.callender.mayannum.db.ImageHelper doInBackground(Integer... integers) {
             return databaseHelper.getImage(image_id);
         }
 
-        protected void onPostExecute(com.callender.mayancal.db.ImageHelper imageHelper) {
+        protected void onPostExecute(com.callender.mayannum.db.ImageHelper imageHelper) {
             if (imageHelper.getImageId() != null) {
                 byte[] image = imageHelper.getImageByteArray();
                 String mayan = imageHelper.getMayanText();
