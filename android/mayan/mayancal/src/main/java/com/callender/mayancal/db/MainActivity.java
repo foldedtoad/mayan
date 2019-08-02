@@ -248,9 +248,11 @@ public class MainActivity extends Activity {
     private void playSoundClip() {
         Log.d(TAG, "play sound clip");
 
-        SoundHelper soundHelper = new SoundHelper();
-        soundHelper.prepare(sound_clip);
-        soundHelper.play();
+        if (sound_clip != null && sound_clip.length > 10) {
+            SoundHelper soundHelper = new SoundHelper();
+            soundHelper.prepare(sound_clip);
+            soundHelper.play();
+        }
     }
 
 }
