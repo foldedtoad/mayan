@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/mayan.iml" filepath="$PROJECT_DIR$/mayan.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mayancal/mayancal.iml" filepath="$PROJECT_DIR$/mayancal/mayancal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mayannum/mayannum.iml" filepath="$PROJECT_DIR$/mayannum/mayannum.iml" />
     </modules>
   </component>
 </project>

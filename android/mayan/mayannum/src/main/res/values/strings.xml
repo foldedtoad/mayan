@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MayanCal</string>
+    <string name="app_name">Mayan Numbers</string>
     <string name="title">title</string>
     <string name="splash_title">Creation</string>
     <string name="mayan_text">Mayan text</string>
