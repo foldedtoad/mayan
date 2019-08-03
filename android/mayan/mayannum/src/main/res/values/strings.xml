@@ -9,4 +9,7 @@
     <string name="mayan_glyph_image">Mayan glyph image"</string>
     <string name="image_name_format">mayan_%02d"</string>
 
+    <string name="menu_about">About</string>
+    <string name="about_text">MayanNum, © 2019 Callender-Consulting, version 1.0</string>
+
 </resources>
