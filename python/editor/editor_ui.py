@@ -8,7 +8,7 @@ sys.dont_write_bytecode = True
 import json
 import Tkinter as tk
 from Tkinter import *
-from PIL import ImageTk,Image
+from PIL import Image,ImageTk
 
 glyphs = None
 imageFilesList = None
