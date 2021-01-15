@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/mayan.iml" filepath="$PROJECT_DIR$/mayan.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mayannum/mayannum.iml" filepath="$PROJECT_DIR$/mayannum/mayannum.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mayan.iml" filepath="$PROJECT_DIR$/mayan.iml" group="mayan" />
+      <module fileurl="file://$PROJECT_DIR$/mayannum/mayannum.iml" filepath="$PROJECT_DIR$/mayannum/mayannum.iml" group="mayan/mayannum" />
     </modules>
   </component>
 </project>
