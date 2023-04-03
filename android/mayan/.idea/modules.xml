@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/mayan.iml" filepath="$PROJECT_DIR$/mayan.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.iml" filepath="$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/mayannum/mayan.mayannum.unitTest.iml" />
     </modules>
   </component>
 </project>
